@@ -94,11 +94,12 @@
   .progress {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
     margin-bottom: 20px;
   }
   .star {
-    font-size: 30px;
+    font-size: 24px;
     filter: grayscale(1) opacity(0.4);
     transition: all 0.3s;
   }
@@ -281,10 +282,59 @@ const LETTERS_DATA = {
     { word: "Drum", emoji: "🥁" },
     { word: "Donut", emoji: "🍩" },
     { word: "Dolphin", emoji: "🐬" }
+  ],
+  E: [
+    { word: "Elephant", emoji: "🐘" },
+    { word: "Egg", emoji: "🥚" },
+    { word: "Eagle", emoji: "🦅" },
+    { word: "Envelope", emoji: "✉️" },
+    { word: "Earth", emoji: "🌍" }
+  ],
+  F: [
+    { word: "Fish", emoji: "🐟" },
+    { word: "Frog", emoji: "🐸" },
+    { word: "Fox", emoji: "🦊" },
+    { word: "Flower", emoji: "🌸" },
+    { word: "Fire", emoji: "🔥" }
+  ],
+  G: [
+    { word: "Goat", emoji: "🐐" },
+    { word: "Grapes", emoji: "🍇" },
+    { word: "Guitar", emoji: "🎸" },
+    { word: "Gift", emoji: "🎁" },
+    { word: "Gorilla", emoji: "🦍" }
+  ],
+  H: [
+    { word: "Hat", emoji: "🎩" },
+    { word: "Horse", emoji: "🐴" },
+    { word: "House", emoji: "🏠" },
+    { word: "Heart", emoji: "❤️" },
+    { word: "Hippo", emoji: "🦛" }
+  ],
+  I: [
+    { word: "Ice Cream", emoji: "🍦" },
+    { word: "Iguana", emoji: "🦎" },
+    { word: "Insect", emoji: "🐛" },
+    { word: "Ice Cube", emoji: "🧊" },
+    { word: "Island", emoji: "🏝️" }
+  ],
+  J: [
+    { word: "Juice", emoji: "🧃" },
+    { word: "Jeans", emoji: "👖" },
+    { word: "Jacket", emoji: "🧥" },
+    { word: "Jelly", emoji: "🍮" },
+    { word: "Jeep", emoji: "🚙" }
+  ],
+  K: [
+    { word: "Kite", emoji: "🪁" },
+    { word: "Kangaroo", emoji: "🦘" },
+    { word: "King", emoji: "🤴" },
+    { word: "Key", emoji: "🔑" },
+    { word: "Koala", emoji: "🐨" }
   ]
 };
 
-const LETTER_ORDER = ["A", "B", "C", "D"];
+const LETTER_ORDER = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
 let roundIndex = 0;
 let score = 0;
 let answered = false;
@@ -316,6 +366,14 @@ function shuffle(arr) {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
+}
+
+// Keeps each round to 4 answer choices (correct letter + 3 random
+// distractors) so the button row stays manageable as more letters are added.
+function getRoundOptions(correctLetter) {
+  const distractorPool = LETTER_ORDER.filter(l => l !== correctLetter);
+  const distractors = shuffle(distractorPool).slice(0, 3);
+  return shuffle([correctLetter, ...distractors]);
 }
 
 function startGame() {
@@ -366,7 +424,7 @@ function loadRound() {
 
   const optionsEl = document.getElementById('letterOptions');
   optionsEl.innerHTML = '';
-  const options = shuffle(LETTER_ORDER);
+  const options = getRoundOptions(currentLetter);
   options.forEach(letter => {
     const btn = document.createElement('button');
     btn.className = 'letter-btn';
